@@ -2,6 +2,7 @@ import CreateListInput from "./components/CreateListInput"
 import { db } from "@/lib/db/index"
 import { listsTable } from "@/lib/db/schema"
 import Link from "next/link"
+import { deleteList } from "./actions"
 
 export default async function Home() {
   const lists = await db.select().from(listsTable)
@@ -16,14 +17,22 @@ export default async function Home() {
 
         <ul className="space-y-3 mt-6">
           {lists.map((list) => (
-            <li key={list.id}>
+            <li key={list.id} className="flex items-center gap-2 group">
               <Link
                 href={`/lists/${list.id}`}
-                className="flex items-center justify-between p-4 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 hover:border-gray-600 transition-all duration-200 group"
+                className="flex-1 flex items-center justify-between p-4 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 hover:border-gray-600 transition-all duration-200"
               >
                 <span className="text-white font-medium">{list.name}</span>
                 <span className="text-gray-500 group-hover:text-white transition-colors">→</span>
               </Link>
+              <form action={deleteList.bind(null, list.id)}>
+                <button
+                  type="submit"
+                  className="p-4 bg-gray-900 border border-gray-800 rounded-xl text-gray-500 hover:text-red-400 hover:border-red-400 transition-all duration-200"
+                >
+                  ✕
+                </button>
+              </form>
             </li>
           ))}
         </ul>
